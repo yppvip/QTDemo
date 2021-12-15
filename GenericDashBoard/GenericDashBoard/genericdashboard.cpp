@@ -6,8 +6,12 @@ GenericDashBoard::GenericDashBoard(QWidget *parent) : QWidget(parent)
     m_animation.setPropertyName("curValue");
     m_animation.setEasingCurve(m_easingCurveType);
 
+//    connect(&m_animation, &QPropertyAnimation::valueChanged,
+//            [&](const QVariant& var) {emit valueChanged(var.toInt()); });  //发送信号
+
     connect(&m_animation, &QPropertyAnimation::valueChanged,
-            [&](const QVariant& var) {emit valueChanged(var.toInt()); });  //发送信号
+            [&](const QVariant& var) {emit valueChanged(var.toDouble()); });  //发送信号
+
     connect(&m_animation, SIGNAL(finished()),
             this, SIGNAL(finished()));
 
@@ -181,12 +185,14 @@ void GenericDashBoard::drawText(QPainter* painter)
 {
     painter->save();
 
-    painter->setFont(QFont("Consolas", m_radius * 0.09, QFont::Bold));
+    painter->setFont(QFont(boardFont, m_radius * fontSize, QFont::Bold));
     painter->setPen(m_textColor);
     QFontMetrics fm = QFontMetrics(painter->font()); //QFontMetrics计算字符串的高和宽
-    QString text = QString::number(m_curValue, 10)/*+ m_suffixText*/ ;
+    QString text = QString::number(m_curValue, 10, numDecimal)/*+ m_suffixText*/ ;
     int w = fm.horizontalAdvance(text);   //计算字符串的宽度
     painter->drawText(QPoint(-w / 2, m_radius / 2), text);
+
+    painter->setFont(QFont(suffixFont, m_radius * suffixSize, QFont::Bold));
     text = m_suffixText;
     w = fm.horizontalAdvance(text);
     QFont font = painter->font();
@@ -277,7 +283,7 @@ QString GenericDashBoard::getSuffixText() const
     return m_suffixText;
 }
 
-int GenericDashBoard::getCurValue() const
+double GenericDashBoard::getCurValue() const
 {
     return m_curValue;
 }
@@ -299,7 +305,20 @@ void GenericDashBoard::setRange(int minValue, int maxValue)
     update();
 }
 
+void GenericDashBoard::setRange(double minValue, double maxValue)
+{
+    m_minValue = minValue;
+    m_maxValue = maxValue;
+    update();
+}
+
 void GenericDashBoard::setMinValue(int minValue)
+{
+    m_minValue = minValue;
+    update();
+}
+
+void GenericDashBoard::setMinValue(double minValue)
 {
     m_minValue = minValue;
     update();
@@ -311,12 +330,41 @@ void GenericDashBoard::setMaxValue(int maxValue)
     update();
 }
 
+void GenericDashBoard::setMaxValue(double maxValue)
+{
+    m_maxValue = maxValue;
+    update();
+}
+
 void GenericDashBoard::setValue(int value)
 {
     if (value < m_minValue)
         value = m_minValue;
     else if (value > m_maxValue)
+        value = m_maxValue;
+
+    m_value = value;
+
+    if (m_animationStepTime == 0)
+    {
+        updateValue(m_value);
+    }
+    else if (m_curValue != m_value)
+    {
+        m_animation.stop();
+        m_animation.setKeyValueAt(0, m_curValue);
+        m_animation.setKeyValueAt(1, m_value);
+        m_animation.setDuration(m_animationStepTime * (m_scaleMajor + m_scaleMinor));
+        m_animation.start();
+    }
+}
+
+void GenericDashBoard::setValue(double value)
+{
+    if (value < m_minValue)
         value = m_minValue;
+    else if (value > m_maxValue)
+        value = m_maxValue;
 
     m_value = value;
 
@@ -335,6 +383,12 @@ void GenericDashBoard::setValue(int value)
 }
 
 void GenericDashBoard::updateValue(int value)
+{
+    m_curValue = value;
+    update();
+}
+
+void GenericDashBoard::updateValue(double value)
 {
     m_curValue = value;
     update();
@@ -427,6 +481,69 @@ void GenericDashBoard::setEasingCurve(QEasingCurve::Type type)
 {
     m_easingCurveType = type;
     m_animation.setEasingCurve(m_easingCurveType);
+}
+
+double GenericDashBoard::getBoardFontSize()
+{
+    return fontSize;
+}
+
+void GenericDashBoard::setBoardFontSize(double d)
+{
+    fontSize = d;
+}
+
+double GenericDashBoard::getBoardSuffixSize()
+{
+    return suffixSize;
+}
+
+void GenericDashBoard::setBoardSuffixSize(double d)
+{
+    suffixSize = d;
+}
+
+QString GenericDashBoard::getBoardFont()
+{
+    return boardFont;
+}
+
+void GenericDashBoard::setBoardFont(QString str)
+{
+    boardFont = str;
+}
+
+QString GenericDashBoard::getSuffixFont()
+{
+    return suffixFont;
+}
+
+void GenericDashBoard::setSuffixFont(QString str)
+{
+    suffixFont = str;
+}
+
+int GenericDashBoard::getNumDecimal()
+{
+    return numDecimal;
+}
+
+void GenericDashBoard::setNumDecimal(int i)
+{
+    if(numDecimal<0)
+    {
+        numDecimal = 0;
+        update();
+        return;
+    }
+    else if(numDecimal > 2)
+    {
+        numDecimal = 0;
+        update();
+        return;
+    }
+    numDecimal = i;
+    update();
 }
 
 void GenericDashBoard::setScalePercentage(double percentage)

@@ -4,6 +4,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     board = new GenericDashBoard();
+    board->setNumDecimal(2);
     slider = new QSlider();
     slider->setOrientation(Qt::Horizontal);
     slider->setRange(0,240);

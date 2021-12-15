@@ -25,10 +25,10 @@
 class GenericDashBoard : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(int minValue             READ getMinValue          WRITE setMinValue)
-            Q_PROPERTY(int maxValue             READ getMaxValue          WRITE setMaxValue)
-            Q_PROPERTY(int value                READ getValue             WRITE setValue)
-            Q_PROPERTY(int curValue             READ getCurValue          WRITE updateValue)
+    Q_PROPERTY(double minValue             READ getMinValue          WRITE setMinValue)
+            Q_PROPERTY(double maxValue             READ getMaxValue          WRITE setMaxValue)
+            Q_PROPERTY(double value                READ getValue             WRITE setValue)
+            Q_PROPERTY(double curValue             READ getCurValue          WRITE updateValue)
             Q_PROPERTY(int animationStepTime    READ getAnimationStepTime WRITE setAnimationStepTime)
             Q_PROPERTY(int scaleMajor           READ getScaleMajor        WRITE setScaleMajor)
             Q_PROPERTY(int scaleMinor           READ getScaleMinor        WRITE setScaleMinor)
@@ -68,10 +68,14 @@ public:
 
     public slots:
         void setRange(int minValue, int maxValue);                  // 设置范围值
+        void setRange(double minValue, double maxValue);
         void setMinValue(int minValue);                             // 设置最小值
+        void setMinValue(double minValue);
         void setMaxValue(int maxValue);                             // 设置最大值
+        void setMaxValue(double maxValue);
 
         void setValue(int value);                                   // 设置目标值
+        void setValue(double value);
 
         void setAnimationStepTime(int msec);                        // 设置每刻度动画持续时间
 
@@ -99,6 +103,20 @@ public:
 
         void setEasingCurve(QEasingCurve::Type type);           // 设置指针动画类型
 
+        double getBoardFontSize();
+        void   setBoardFontSize(double d);
+
+        double getBoardSuffixSize();
+        void setBoardSuffixSize(double d);
+
+        QString getBoardFont();   //获取表盘文字的字体
+        void setBoardFont(QString str);
+
+        QString getSuffixFont();  //获取表盘提示内容的字体
+        void setSuffixFont(QString str);
+
+        int getNumDecimal();     //获取表盘数据显示时小数点后面的位数
+        void setNumDecimal(int i); //设置表盘数据显示时小数点后面的位数;最多为两位
     protected:
         void paintEvent(QPaintEvent* event) override;
         void drawBackground(QPainter* painter);          // 绘制背景
@@ -107,10 +125,12 @@ public:
         void drawPainterIndicator(QPainter* painter);    // 绘制指示器
         void drawText(QPainter* painter);                // 绘制提示文本
 
-        int getCurValue() const;                         //获取当前值
+        double getCurValue() const;                         //获取当前值
         void updateValue(int value);                     // 更新表盘值        【主要在指针动画时使用】
+        void updateValue(double value);
 
     signals:
+        void valueChanged(double value);
         void valueChanged(int value);
         void finished();
 
@@ -124,16 +144,24 @@ public:
         QColor  m_pointerColor = QColor(250, 50, 50);        // 指针颜色
         QColor  m_textColor = QColor(255, 255, 255);         // 提示文本颜色
 
-        int m_curValue = 0;               // 表盘指针当前值     【主要在指针动画时使用】
-        int m_value = 0;                  // 表盘指针最终指向的值
-        int m_minValue = 0;               // 表盘最小值
-        int m_maxValue = 240;             // 表盘最大值
+        double m_curValue = 0;               // 表盘指针当前值     【主要在指针动画时使用】
+        double m_value = 0;                  // 表盘指针最终指向的值
+        double m_minValue = 0;               // 表盘最小值
+        double m_maxValue = 240;             // 表盘最大值
         int m_startAngle = 45;            // 刻度盘起始角度
         int m_endAngle = 315;           // 刻度盘结束角度
         int m_scaleMajor = 10;            // 大刻度数量
         int m_scaleMinor = 5;             // 小刻度数量        【如：总刻度数量 = scaleMajor * scaleMinor】
         double m_scalePercentage = 0.8;   // 表盘刻度划分百分比 【对应 m_scaleStartColor m_scaleEndColor】
         QString m_suffixText = "Km/h";    // 提示文本后缀      【如：Km/h 等】
+
+        double fontSize = 0.09;           //设置表盘上字体的大小;建议数值在0.09左右
+        double suffixSize = 0.09;         //设置提示文本字体的大小;建议数值在0.09左右
+
+        QString boardFont = "Consolas";   //设置表盘文字的字体
+        QString suffixFont = "Consolas";  //设置单位提示文本的字体
+
+        int numDecimal = 0;    //表盘数据显示时，小数点后面的位数
 
         QPropertyAnimation m_animation;   // 指针属性动画
         int m_animationStepTime = 50;     // 每刻度动画持续时间
