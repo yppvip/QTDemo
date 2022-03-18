@@ -49,6 +49,10 @@ protected:
 public slots:
     void onLevelUpBtn();   //等级提高按钮按下("+"按钮)，刻度精度变高，时间轴上表示的总范围变小
     void onLevelDownBtn(); //等级降低按钮按下("-"按钮),刻度精度变低，时间轴上表示的总范围变大
+
+signals:
+    void signalPlayTimeChanged(QDateTime mCurrentDateTime);  //播放时间已改变
+
 private:
     void initUi();     //初始化ui界面
     void initStepLevel();  //初始化mStepVec数组

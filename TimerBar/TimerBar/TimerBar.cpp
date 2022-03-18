@@ -91,6 +91,7 @@ void TimeBar::mousePressEvent(QMouseEvent *event)
 void TimeBar::mouseReleaseEvent(QMouseEvent *event)
 {
     mIsPressed = false;
+    emit signalPlayTimeChanged(mCurrentDateTime);  //发送信号，调整视频播放的开端
     QWidget::mouseReleaseEvent(event);
 }
 
