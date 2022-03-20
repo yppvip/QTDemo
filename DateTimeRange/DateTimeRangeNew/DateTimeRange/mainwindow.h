@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "datetimerange.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -10,13 +10,5 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-    DateTimeRange* range;
-    QWidget* centerWiget;
-    QHBoxLayout* mainLayout;
-
-protected:
-    void resizeEvent(QResizeEvent* event);
-    void mouseMoveEvent(QMouseEvent* event);
 };
 #endif // MAINWINDOW_H

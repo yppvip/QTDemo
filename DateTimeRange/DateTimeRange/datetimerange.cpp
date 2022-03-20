@@ -1,4 +1,25 @@
 #include "datetimerange.h"
+#include <QWidget>
+void updataCalendarPos(DateTimeRange* range)
+{
+
+    while(range->updatePos){
+        //将dateTimeRangeSelect设置到LineEdit周围
+        if(range->calenderOpenLocal == range->up){  //从上面打开
+            QPoint lineEditPos = range->mapToGlobal(range->dateTimeLineEdit->pos());  //获得在屏幕中的坐标
+            range->dateTimeRangeSelect->move(lineEditPos.x(),
+                                             lineEditPos.y()
+                                             - range->dateTimeLineEdit->height()
+                                             - range->dateTimeRangeSelect->height() + 20);
+        }
+        else{
+            QPoint lineEditPos = range->mapToGlobal(range->dateTimeLineEdit->pos());  //获得在屏幕中的坐标
+            range->dateTimeRangeSelect->move(lineEditPos.x(),lineEditPos.y() + range->dateTimeLineEdit->height() );
+        }
+    }
+}
+
+
 
 DateTimeRangeSelect::DateTimeRangeSelect(QWidget *parent) :
     QWidget(parent),
@@ -6,7 +27,7 @@ DateTimeRangeSelect::DateTimeRangeSelect(QWidget *parent) :
     endDateTime(QDateTime::currentDateTime())
 {
 
-    setWindowFlags (Qt::CustomizeWindowHint);
+    setWindowFlags (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     startDateTime.setTime(QTime(0,0,0));
     endDateTime.setTime(QTime(18,0,0));
     mainLayoutVBox = new QVBoxLayout(this);
@@ -50,9 +71,12 @@ DateTimeRangeSelect::DateTimeRangeSelect(QWidget *parent) :
     mainLayoutVBox->addLayout(calendarLayoutHBox);
     mainLayoutVBox->addLayout(dayInfoLayoutHBox);
 
+    mainLayoutVBox->setContentsMargins(0, 0, 0, 0);
+    mainLayoutVBox->setSpacing(0);
+
     hide();
     setMinimumSize(240,180);
-    setMaximumSize(400,240);
+    setMaximumSize(800,260);
     initSignalsAndSlots();
 }
 
@@ -129,7 +153,11 @@ DateTimeRange::DateTimeRange(QWidget *parent) : QWidget(parent)
 {
     widgetLayout = new QHBoxLayout(this);
     dateTimeLineEdit = new QLineEdit();
+    dateTimeLineEdit->setSizePolicy(QSizePolicy::Expanding,
+                                    QSizePolicy::Fixed);
     widgetLayout->addWidget(dateTimeLineEdit);
+    widgetLayout->setMargin(0);
+    widgetLayout->setSpacing(0);
 
     action = new QWidgetAction(dateTimeLineEdit);
     openCalenderBtn = new QToolButton();
@@ -167,15 +195,23 @@ DateTimeRange::DateTimeRange(QWidget *parent) : QWidget(parent)
         QPoint lineEditPos = this->mapToGlobal(this->pos());  //获得在屏幕中的坐标
         dateTimeRangeSelect->move(lineEditPos.x(),lineEditPos.y() + dateTimeLineEdit->height() );
     }
-    setMaximumSize(200,60);
+    setMouseTracking(true);
+//    setMaximumSize(200,60);
+    setWindowFlags (Qt::FramelessWindowHint);
+
+    std::thread t(updataCalendarPos, this);
+    t.detach();
 }
 
 DateTimeRange::~DateTimeRange()
 {
-//    dateTimeRangeSelect->deleteLater();
+    updatePos = false;
+    _sleep(10);
+    dateTimeRangeSelect->deleteLater();
     action->deleteLater();
     openCalenderBtn->deleteLater();
 }
+
 
 void DateTimeRange::slotDateTimeRangeChanged(QDateTime start, QDateTime end)
 {
@@ -187,19 +223,3 @@ void DateTimeRange::slotDateTimeRangeChanged(QDateTime start, QDateTime end)
     endDateTime =end;
 }
 
-void DateTimeRange::resizeEvent(QResizeEvent *event)
-{
-//    resize(dateTimeLineEdit->width(),
-//           dateTimeLineEdit->height());
-
-    if(calenderOpenLocal == up){  //从上面打开
-        QPoint lineEditPos = this->mapToGlobal(this->pos());  //获得在屏幕中的坐标
-        dateTimeRangeSelect->move(lineEditPos.x(),lineEditPos.y() - dateTimeLineEdit->height()-
-                                  dateTimeRangeSelect->height());
-    }
-    else{
-        QPoint lineEditPos = this->mapToGlobal(this->pos());  //获得在屏幕中的坐标
-        dateTimeRangeSelect->move(lineEditPos.x(),lineEditPos.y() + dateTimeLineEdit->height() );
-    }
-    return QWidget::resizeEvent(event);
-}

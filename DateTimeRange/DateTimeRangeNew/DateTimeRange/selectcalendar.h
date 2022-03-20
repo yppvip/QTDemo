@@ -1,38 +1,36 @@
-#ifndef DATETIMERANGE_H
-#define DATETIMERANGE_H
+#ifndef SELECTCALENDAR_H
+#define SELECTCALENDAR_H
+//该类进行时间范围选择功能
+
 
 #include <QWidget>
-#include <QLineEdit>
 #include <QDateTime>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QPushButton>
 #include <QCalendarWidget>  //日历控件
 #include <QTimeEdit>
 #include <QSpacerItem>
 #include <QLabel>
-#include <QResizeEvent>
-#include <QToolButton>
-#include <QWidgetAction>
-#include <QMouseEvent>
-#include <thread>
-class DateTimeRangeSelect : public QWidget  //用于实现日历弹出与时间选择功能
+#include <QPushButton>
+class SelectCalendar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DateTimeRangeSelect(QWidget* parent = nullptr);
-    ~DateTimeRangeSelect();
+    explicit SelectCalendar(QWidget *parent = nullptr);
+    ~SelectCalendar();
     QDateTime getStartDateTime();
     QDateTime getEndDateTime();
 
 public slots:
     void slotUpdate();  //当打开该控件时更新时间信息
-    void slotSureBtnClicked();
-    void slotCancelBtnClicked();
+    void slotSureBtnClicked(); //确认按钮按下时，更新信息
+    void slotCancelBtnClicked(); //取消按钮按下
+
 signals:
     //当选择的时间范围，发生改变时，发生跟新信号
     void signalUpdateTimeRange(QDateTime startDateTime,
                                QDateTime endDateTime);
+
 private:
     void initSignalsAndSlots();
 
@@ -58,40 +56,7 @@ private:
     QDateTime startDateTime;
     QDateTime endDateTime;
 
-};
-
-
-/*****************************************************/
-
-/****************************************************/
-class DateTimeRange : public QWidget
-{
-    Q_OBJECT
-public:
-    enum OpenLocal{
-        up,
-        down
-    };
-    explicit DateTimeRange(QWidget *parent = nullptr);
-    ~DateTimeRange();
-    bool updatePos = true;
-    DateTimeRangeSelect* dateTimeRangeSelect;
-    QLineEdit* dateTimeLineEdit;
-    OpenLocal calenderOpenLocal = up;  //时间选择框打开的位置
-public slots:
-    void slotDateTimeRangeChanged(QDateTime start,
-                                  QDateTime end);
-signals:
-    void signalOpenCalender();
-
-private:
-    QHBoxLayout* widgetLayout;
-    QToolButton* openCalenderBtn;
-    QWidgetAction* action;
-
-    QDateTime startDateTime;
-    QDateTime endDateTime;
 
 };
 
-#endif // DATETIMERANGE_H
+#endif // SELECTCALENDAR_H

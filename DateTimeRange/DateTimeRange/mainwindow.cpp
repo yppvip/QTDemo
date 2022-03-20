@@ -9,16 +9,22 @@ MainWindow::MainWindow(QWidget *parent)
     centerWiget->setLayout(mainLayout);
     range = new DateTimeRange();
     mainLayout->addWidget(range);
+    setMouseTracking(true);
+    centralWidget()->setMouseTracking(true);
 }
 
 MainWindow::~MainWindow()
 {
-    range->deleteLater();
+    delete range;
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    range->resize(range->width(),range->height());
     return QMainWindow::resizeEvent(event);
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    return QMainWindow::mouseMoveEvent(event);
 }
 
