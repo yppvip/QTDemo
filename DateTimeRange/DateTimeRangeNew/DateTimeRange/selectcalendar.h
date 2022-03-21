@@ -33,6 +33,7 @@ signals:
 
 private:
     void initSignalsAndSlots();
+    void setWidgetStytle();
 
 private:
     QVBoxLayout* mainLayoutVBox;  //垂直主布局
@@ -47,10 +48,14 @@ private:
 
     QVBoxLayout* startDateLayoutVBox; //管理日历和时间控件
     QCalendarWidget* startCalendar;
+    QHBoxLayout* startTimeHBox;  //开始时间提示的布局
+    QLabel* startTimeInfoLabel;
     QTimeEdit* startTimeEdit;
 
     QVBoxLayout* endDateLayoutVBox; //管理日历和时间控件
     QCalendarWidget* endCalendar;
+    QHBoxLayout* endTimeHBox;
+    QLabel* endTimeInfoLabel;
     QTimeEdit* endTimeEdit;
 
     QDateTime startDateTime;

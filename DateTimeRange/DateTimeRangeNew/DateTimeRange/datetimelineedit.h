@@ -21,7 +21,7 @@ public:
         up,
         down
     };
-    DateTimeLineEdit();
+    DateTimeLineEdit(QWidget *parent = nullptr);
     ~DateTimeLineEdit();
 
 public slots:

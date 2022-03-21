@@ -1,9 +1,17 @@
 #include "datetimelineedit.h"
 
-DateTimeLineEdit::DateTimeLineEdit()
+DateTimeLineEdit::DateTimeLineEdit(QWidget *parent): QLineEdit(parent),
+    startDateTime(QDateTime::currentDateTime()),
+    endDateTime(QDateTime::currentDateTime())
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
+    startDateTime.setTime(QTime(0, 0, 0));
+    endDateTime.setTime(QTime(18, 0, 0));
+    QString timeStr;
+    timeStr = startDateTime.toString("yyyy-MM-dd hh:mm:ss") + "-"
+             + endDateTime.toString("yyyy-MM-dd hh:mm:ss");
+    setText(timeStr);
     action = new QWidgetAction(this);
     openCalenderBtn = new QToolButton();
     openCalenderBtn->setCursor(Qt::ArrowCursor);
@@ -16,6 +24,13 @@ DateTimeLineEdit::DateTimeLineEdit()
                      "height: 16px;qproperty-flat: true;"
                      "margin-right: 0px;border: none;border-width: 0;"
                      "border-image: url(calend2.svg) 0 0 0 0;}");
+    connect(openCalenderBtn,&QToolButton::clicked,
+            this,&DateTimeLineEdit::signalOpenCalender);
+
+}
+
+DateTimeLineEdit::~DateTimeLineEdit()
+{
 
 }
 
