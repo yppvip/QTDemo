@@ -96,7 +96,7 @@ void DateIconButton::paintEvent(QPaintEvent *e)
 void DateIconButton::enterEvent(QEvent *event)
 {
     Q_UNUSED(event);
-    if(type == notenable || type == notworking ||type == selected)
+    if(type == notenable || type == notworking)
         return;
     prevType = type;
     type = hover;
@@ -105,7 +105,7 @@ void DateIconButton::enterEvent(QEvent *event)
 void DateIconButton::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
-    if(type == notenable || type == notworking)
+    if(type == notenable || type == notworking || type == selected)
         return;
     type = prevType;
 }

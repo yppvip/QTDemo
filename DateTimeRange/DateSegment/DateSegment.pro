@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     calendarwidget.cpp \
     datesegment.cpp \
+    datesegmentline.cpp \
     datetimepanel.cpp \
     main.cpp \
     mainwindow.cpp
@@ -18,6 +19,7 @@ SOURCES += \
 HEADERS += \
     calendarwidget.h \
     datesegment.h \
+    datesegmentline.h \
     datetimepanel.h \
     mainwindow.h
 

@@ -17,6 +17,7 @@ public:
     explicit DateTimePanel(QWidget *parent = nullptr);
     void initTime(int h,int m,int s);
     void initLabelText(QString str);
+    void updateInfo();  //每一次打开时更新时间数据
     QDateTime getDateTime();
 public slots:
     void slotUpdateDate(QDate currentDate);
