@@ -36,6 +36,13 @@ void DateIconButton::setType(DateIconButton::DayType t,bool enable)
     update();
 }
 
+void DateIconButton::setPrevType(DayType t, bool enable)
+{
+    prevType = t;
+    QAbstractButton::setEnabled(enable);
+    update();
+}
+
 DateIconButton::~DateIconButton()
 {
 }
@@ -105,7 +112,7 @@ void DateIconButton::enterEvent(QEvent *event)
 void DateIconButton::leaveEvent(QEvent *event)
 {
     Q_UNUSED(event);
-    if(type == notenable || type == notworking || type == selected)
+    if(type == notenable || type == notworking)
         return;
     type = prevType;
 }
@@ -360,6 +367,7 @@ void CalendarWidget::resizeDays()
             }
             if(date == tDate){
                 btn->setType(DateIconButton::selected);
+                btn->setPrevType(DateIconButton::selected);
             }
 
             tDate = tDate.addDays(1);

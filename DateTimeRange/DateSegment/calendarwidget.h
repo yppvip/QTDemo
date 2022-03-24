@@ -57,6 +57,7 @@ public:
     explicit DateIconButton(BtnType btnTy,QWidget *parent = nullptr);
     void setEnabled(bool value);
     void setType(DayType t,bool enable = true);
+    void setPrevType(DayType t, bool enable = true);
     ~DateIconButton();
 
 private:

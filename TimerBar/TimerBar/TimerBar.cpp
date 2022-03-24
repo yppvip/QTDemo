@@ -13,7 +13,7 @@ TimeBar::TimeBar(QWidget *parent) :
 {
     //设置ui样式
     initUi();
-    setMouseTracking(true);
+    setMouseTracking(false);   //必须设置为false，不然鼠标进入控件时会导致mCurrentDateTime清空
 
     initStepLevel(); //设置时间轴单位和像素步长的关系
 
@@ -140,6 +140,7 @@ void TimeBar::initUi()
         setObjectName("TimeBar");
     }
     resize(955,100);
+//    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     setMinimumSize(QSize(0,100));
     setMaximumSize(QSize(1920,100));
     verticalLayout = new QVBoxLayout(this);
